@@ -128,22 +128,33 @@ def runner():
             except Exception as e:
                 print(e)
         """
-
+"""
 @pytest.fixture(scope="function")
 def runner():
-    return CliRunner()
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        for the_file in os.listdir('./'):
+            file_path = os.path.join('./', the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path): shutil.rmtree(file_path)
+            except Exception as e:
+                print(e)
+        return runner
+   """     
 
 @pytest.fixture(scope="function")
-def start_project(runner, structure_fix, links_fix, formatting_fix):
+def start_project(structure_fix, links_fix, formatting_fix):
     #runner = CliRunner()
-    with runner.isolated_filesystem():
-        print(os.getcwd())
-        os.mkdir('./json')
-        with open('./json/structure.json', 'w') as f:
-            json.dump(structure_fix, f)
-        with open('./json/links.json', 'w') as f:
-            json.dump(links_fix, f)
-        with open('./json/formatting.json', 'w') as f:
-            json.dump(formatting_fix, f)
+    #with runner.isolated_filesystem():
+    print(os.getcwd())
+    os.mkdir('./json')
+    with open('./json/structure.json', 'w') as f:
+        json.dump(structure_fix, f)
+    with open('./json/links.json', 'w') as f:
+        json.dump(links_fix, f)
+    with open('./json/formatting.json', 'w') as f:
+        json.dump(formatting_fix, f)
         #json.dump({}, f)
     return JsonWrapper(structure_fix, links_fix, formatting_fix)

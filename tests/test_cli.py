@@ -2,63 +2,71 @@ import pytest
 from click.testing import CliRunner
 from links_list import cli
 import os
+import json
 
-#@pytest.fixture
-#def runner():
-#    return CliRunner()
+@pytest.fixture
+def runner():
+    return CliRunner()
 
 def test_anchor():
     assert cli.anchor('title with spaces') == 'titlewithspaces'
 
 @pytest.mark.incremental
+@pytest.mark.usefixtures("runner")
 class TestStartProject(object):
 
-    def test_folder_creation(self):
-        runner = CliRunner()
+    def test_folder_creation(self, runner):
         with runner.isolated_filesystem():
-            #cli.start_project()
             result = runner.invoke(cli.main, ['start_project'])
             assert result.exit_code == 0
             assert not result.exception
             assert os.path.isdir('./json')
 
-    def test_links_file(self):
-        runner = CliRunner()
+    def test_links_file(self, runner):
         with runner.isolated_filesystem():
-            #cli.start_project()
             result = runner.invoke(cli.main, ['start_project'])
             assert result.exit_code == 0
             assert not result.exception
             assert os.path.exists('./json/links.json')
 
-    def test_structure_file(self):
-        runner = CliRunner()
+    def test_structure_file(self, runner):
         with runner.isolated_filesystem():
-            #cli.start_project()
             result = runner.invoke(cli.main, ['start_project'])
             assert result.exit_code == 0
             assert not result.exception
             assert os.path.exists('./json/structure.json')
 
+def start_project(jsonwrapper):
+    print(os.getcwd())
+    os.mkdir('./json')
+    with open('./json/structure.json', 'w') as f:
+        json.dump(jsonwrapper.structure, f)
+    with open('./json/links.json', 'w') as f:
+        json.dump(jsonwrapper.links, f)
+    with open('./json/formatting.json', 'w') as f:
+        json.dump(jsonwrapper.formatting, f)
 
-@pytest.mark.usefixtures("runner", "start_project")
+@pytest.mark.usefixtures("runner", "jsonwrapper")
 class TestGetJson(object):
 
-    def test_structure(self, start_project):
+    def test_structure(self, runner, jsonwrapper):
         with runner.isolated_filesystem():
+            start_project(jsonwrapper)
             structure, _, _ = cli.get_json()
-            assert structure == start_project.structure
+            assert structure == jsonwrapper.structure
 
-    def test_links(self, start_project):
+    def test_links(self, runner, jsonwrapper):
         with runner.isolated_filesystem():
+            start_project(jsonwrapper)
             _, links, _ = cli.get_json()
-            assert links == start_project.links
+            assert links == jsonwrapper.links
 
-    def test_formatting(self, start_project):
+    def test_formatting(self, runner, jsonwrapper):
         with runner.isolated_filesystem():
+            start_project(jsonwrapper)
             print(os.getcwd())
             _, _, formatting = cli.get_json()
-            assert formatting == start_project.formatting
+            assert formatting == jsonwrapper.formatting
 
 def test_link_headings(jsonwrapper):
     link_headings = cli.get_link_headings(jsonwrapper.links)
