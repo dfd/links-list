@@ -68,11 +68,27 @@ class TestGetJson(object):
             _, _, formatting = cli.get_json()
             assert formatting == jsonwrapper.formatting
 
-def test_link_headings(jsonwrapper):
+def test_get_link_headings(jsonwrapper):
     link_headings = cli.get_link_headings(jsonwrapper.links)
     headings = set(['Dogs','Puppies','Cats','Kittens'])
     assert link_headings == headings
         
+@pytest.mark.usefixtures("jsonwrapper")
+class TestStructureHeadings(object):
+
+    def test_structure_headings(self, jsonwrapper):
+        headings = set(['Dogs','Puppies','Cats','Kittens'])
+        structure_headings, _ = cli.get_structure_headings(
+                jsonwrapper.structure)
+        assert structure_headings == headings
+
+    def test_headings_to_folders(self, jsonwrapper):
+        htf = {'Dogs':'Dog Photos', 'Puppies':'Dog Photos', 
+                'Cats':'Cat Photos', 'Kittens':'Cat Photos'}
+        _, headings_to_folders = cli.get_structure_headings(
+                jsonwrapper.structure)
+        assert headings_to_folders == htf
+
 """
 
 def test_cli(runner):
