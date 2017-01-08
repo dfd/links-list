@@ -1,0 +1,48 @@
+[
+    {
+        "author": "Amanda",
+        "description": "\"Your Recommended Daily Allowance of Puppies\"",
+        "headings": [
+            "Puppy"
+        ],
+        "title": "The Daily Puppy",
+        "url": "http://www.dailypuppy.com/"
+    },
+    {
+        "author": "Pexels",
+        "description": "\"Browse a wide range of dog images and find high quality and professional pictures you can use for free. You can find photos of bulldogs, retrievers, beagles and of course puppies. Also have a look at our pictures of pets and cats.\"",
+        "headings": [
+            "Dogs"
+        ],
+        "title": "Dog Images",
+        "url": "https://www.pexels.com/search/dog/"
+    },
+    {
+        "author": "Chelsea Marshall",
+        "description": "\"The whole internet has led up to this crucial moment.\"",
+        "headings": [
+            "Kittens"
+        ],
+        "title": "The 100 Most Important Kitten Photos Of All Time",
+        "url": "https://www.buzzfeed.com/chelseamarshall/best-kitten-pictures?utm_term=.kieR4bQpwG#.xyA4JZEVx3"
+    },
+    {
+        "author": "Reddit",
+        "description": "\"This is subreddit is only for cat pictures, so yeah... Keep your paws off it if you want to post something else.\"",
+        "headings": [
+            "Cats"
+        ],
+        "title": "r/CatPictures",
+        "url": "https://www.reddit.com/r/catpictures/"
+    },
+    {
+        "author": "Awkward Family Photos",
+        "description": "Awkward family photos featuring pets.",
+        "headings": [
+            "Dogs",
+            "Cats"
+        ],
+        "title": "Awkward Family Pet Photos",
+        "url": "http://awkwardfamilyphotos.com/category/photos/pets-2/"
+    }
+]
