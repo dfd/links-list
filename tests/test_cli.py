@@ -78,14 +78,14 @@ class TestStructureHeadings(object):
 
     def test_structure_headings(self, jsonwrapper):
         headings = set(['Dogs','Puppies','Cats','Kittens'])
-        structure_headings, _ = cli.get_structure_headings(
+        structure_headings, _, _ = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert structure_headings == headings
 
     def test_headings_to_folders(self, jsonwrapper):
         htf = {'Dogs':'Dog Photos', 'Puppies':'Dog Photos', 
                 'Cats':'Cat Photos', 'Kittens':'Cat Photos'}
-        _, headings_to_folders = cli.get_structure_headings(
+        _, headings_to_folders, _ = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert headings_to_folders == htf
 

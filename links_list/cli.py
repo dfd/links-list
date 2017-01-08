@@ -54,11 +54,13 @@ def get_link_headings(links):
 def get_structure_headings(structure):
     structure_headings = set([])
     headings_to_folders = {}
-    for folder in structure:
+    title_to_index = {}
+    for idx, folder in enumerate(structure):
         for heading in folder['headings']:
             headings_to_folders[heading] = folder['title']
             structure_headings.add(heading)
-    return structure_headings, headings_to_folders
+            title_to_index[folder['title']] = idx
+    return structure_headings, headings_to_folders, title_to_index
 
 def delete_old_output():
     pass
@@ -78,7 +80,8 @@ def generate():
     """
     structure, links, formatting = get_json()
     link_headings = get_link_headings(links)
-    structure_headings, headings_to_folders = get_structure_headings(structure)
+    structure_headings, headings_to_folders, title_to_index = \
+            get_structure_headings(structure)
     delete_old_output()
     links = check_urls(links)
     generate_output(links, structure, formatting)
