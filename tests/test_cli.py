@@ -89,6 +89,11 @@ class TestStructureHeadings(object):
                 jsonwrapper.structure)
         assert headings_to_folders == htf
 
+    def test_title_to_index(self, jsonwrapper):
+        tti = {'Cat Photos':0, 'Dog Photos':1}
+        _, _, title_to_index = cli.get_structure_headings(
+                jsonwrapper.structure)
+        assert title_to_index == tti
 """
 
 def test_cli(runner):
