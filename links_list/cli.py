@@ -42,7 +42,6 @@ def get_json():
     structure = read_json(json_dir + 'structure.json')
     links = read_json(json_dir + 'links.json')
     formatting = read_json('./json/formatting.json')
-    #formatting = []
     return structure, links, formatting
 
 def get_link_headings(links):
@@ -53,7 +52,13 @@ def get_link_headings(links):
     return link_headings
 
 def get_structure_headings(structure):
-    pass
+    structure_headings = set([])
+    headings_to_folders = {}
+    for folder in structure:
+        for heading in folder['headings']:
+            headings_to_folders[heading] = folder['title']
+            structure_headings.add(heading)
+    return structure_headings, headings_to_folders
 
 def delete_old_output():
     pass
@@ -73,7 +78,7 @@ def generate():
     """
     structure, links, formatting = get_json()
     link_headings = get_link_headings(links)
-    headings_to_folders, structure_headings = get_structure_headings(structure)
+    structure_headings, headings_to_folders = get_structure_headings(structure)
     delete_old_output()
     links = check_urls(links)
     generate_output(links, structure, formatting)
