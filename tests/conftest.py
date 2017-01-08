@@ -87,17 +87,49 @@ def links_fix():
         ]
     return links
 
+@pytest.fixture
+def formatting_fix():
+    formatting = {
+            "main title": "#",
+            "headings": "##",
+            "toc headings": "###",
+            "link title": "",
+            "author": "",
+            "description": "",
+            "tags": ""
+        }
+    return formatting
+
+
 class JsonWrapper:
-    def __init__(self, structure, links):
+    def __init__(self, structure, links, formatting):
         self.structure = structure
         self.links = links
+        self.formatting = formatting
 
 #@pytest.fixture(scope="module")
 #def jsonwrapper():
 #    return JsonWrapper(structure_fix, links_fix)
+"""
+@pytest.fixture(scope="function")
+def runner():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        return runner
+        #yield runner
+        
+        for the_file in os.listdir('./'):
+            file_path = os.path.join('./', the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path): shutil.rmtree(file_path)
+            except Exception as e:
+                print(e)
+        """
 
-@pytest.fixture
-def start_project(structure_fix, links_fix):
+@pytest.fixture(scope="function")
+def start_project(structure_fix, links_fix, formatting_fix):
     runner = CliRunner()
     with runner.isolated_filesystem():
         os.mkdir('./json')
@@ -105,4 +137,7 @@ def start_project(structure_fix, links_fix):
             json.dump(structure_fix, f)
         with open('./json/links.json', 'w') as f:
             json.dump(links_fix, f)
-    return JsonWrapper(structure_fix, links_fix)
+        with open('./json/formatting.json', 'w') as f:
+            json.dump(formatting_fix, f)
+        #json.dump({}, f)
+    return JsonWrapper(structure_fix, links_fix, formatting_fix)

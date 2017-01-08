@@ -41,7 +41,7 @@ class TestStartProject(object):
             assert os.path.exists('./json/structure.json')
 
 
-@pytest.mark.usefixtures("start_project")
+@pytest.mark.usefixtures("runner", "start_project")
 class TestGetJson(object):
 
     def test_structure(self, start_project):
@@ -51,6 +51,11 @@ class TestGetJson(object):
     def test_links(self, start_project):
         _, links, _ = cli.get_json()
         assert links == start_project.links
+
+    def test_formatting(self, start_project):
+        print(os.getcwd())
+        _, _, formatting = cli.get_json()
+        assert formatting == start_project.formatting
 """
 
 def test_cli(runner):

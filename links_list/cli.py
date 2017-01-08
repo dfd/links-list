@@ -37,11 +37,12 @@ def read_json(location):
         return json.load(data_file)
 
 def get_json():
-    #json_dir = os.getcwd() + '/json/'
     json_dir = './json/'
     structure = read_json(json_dir + 'structure.json')
     links = read_json(json_dir + 'links.json')
-    return structure, links, []
+    formatting = read_json('./json/formatting.json')
+    #formatting = []
+    return structure, links, formatting
 
 def get_link_headings(links):
     pass
