@@ -42,7 +42,7 @@ def links_fix():
                 "author": "Amanda",
                 "description": "\"Your Recommended Daily Allowance of Puppies\"",
                 "headings": [
-                    "Puppy"
+                    "Puppies"
                 ],
                 "title": "The Daily Puppy",
                 "url": "http://www.dailypuppy.com/"
@@ -107,9 +107,10 @@ class JsonWrapper:
         self.links = links
         self.formatting = formatting
 
-#@pytest.fixture(scope="module")
-#def jsonwrapper():
-#    return JsonWrapper(structure_fix, links_fix)
+@pytest.fixture(scope="module")
+def jsonwrapper():
+    return JsonWrapper(structure_fix(), links_fix(), formatting_fix())
+
 """
 @pytest.fixture(scope="function")
 def runner():
@@ -129,9 +130,14 @@ def runner():
         """
 
 @pytest.fixture(scope="function")
-def start_project(structure_fix, links_fix, formatting_fix):
-    runner = CliRunner()
+def runner():
+    return CliRunner()
+
+@pytest.fixture(scope="function")
+def start_project(runner, structure_fix, links_fix, formatting_fix):
+    #runner = CliRunner()
     with runner.isolated_filesystem():
+        print(os.getcwd())
         os.mkdir('./json')
         with open('./json/structure.json', 'w') as f:
             json.dump(structure_fix, f)

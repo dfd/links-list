@@ -33,6 +33,7 @@ def start_project():
         click.echo('Copied ' + f)
 
 def read_json(location):
+    print(os.getcwd())
     with open(location) as data_file:
         return json.load(data_file)
 
@@ -45,7 +46,11 @@ def get_json():
     return structure, links, formatting
 
 def get_link_headings(links):
-    pass
+    link_headings = set([])
+    for link in links:
+        for tag in link['headings']:
+            link_headings.add(tag)
+    return link_headings
 
 def get_structure_headings(structure):
     pass

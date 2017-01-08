@@ -3,9 +3,9 @@ from click.testing import CliRunner
 from links_list import cli
 import os
 
-@pytest.fixture
-def runner():
-    return CliRunner()
+#@pytest.fixture
+#def runner():
+#    return CliRunner()
 
 def test_anchor():
     assert cli.anchor('title with spaces') == 'titlewithspaces'
@@ -45,17 +45,26 @@ class TestStartProject(object):
 class TestGetJson(object):
 
     def test_structure(self, start_project):
-        structure, _, _ = cli.get_json()
-        assert structure == start_project.structure
+        with runner.isolated_filesystem():
+            structure, _, _ = cli.get_json()
+            assert structure == start_project.structure
 
     def test_links(self, start_project):
-        _, links, _ = cli.get_json()
-        assert links == start_project.links
+        with runner.isolated_filesystem():
+            _, links, _ = cli.get_json()
+            assert links == start_project.links
 
     def test_formatting(self, start_project):
-        print(os.getcwd())
-        _, _, formatting = cli.get_json()
-        assert formatting == start_project.formatting
+        with runner.isolated_filesystem():
+            print(os.getcwd())
+            _, _, formatting = cli.get_json()
+            assert formatting == start_project.formatting
+
+def test_link_headings(jsonwrapper):
+    link_headings = cli.get_link_headings(jsonwrapper.links)
+    headings = set(['Dogs','Puppies','Cats','Kittens'])
+    assert link_headings == headings
+        
 """
 
 def test_cli(runner):
