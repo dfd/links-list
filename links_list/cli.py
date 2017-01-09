@@ -84,6 +84,6 @@ def generate():
     structure_headings, headings_to_folders, title_to_index = \
             get_structure_headings(structure)
     delete_old_output()
-    links = check_urls(links)
+    check_urls(links)
     generate_output(links, structure, formatting)
     print_results(links, link_headings, structure_headings)
