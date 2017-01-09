@@ -63,7 +63,8 @@ def get_structure_headings(structure):
     return structure_headings, headings_to_folders, title_to_index
 
 def delete_old_output():
-    pass
+    shutil.rmtree('./output')
+    os.remove('README.md')
 
 def check_urls(links):
     pass
