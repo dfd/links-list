@@ -3,6 +3,8 @@ import os, shutil, glob
 from click.testing import CliRunner
 import json
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 def pytest_runtest_makereport(item, call):
     if "incremental" in item.keywords:
         if call.excinfo is not None:
@@ -17,88 +19,18 @@ def pytest_runtest_setup(item):
 
 @pytest.fixture
 def structure_fix():
-    structure = [
-            {
-                "headings": [
-                    "Kittens",
-                    "Cats"
-                ],
-                "title": "Cat Photos"
-            },
-            {
-                "headings": [
-                    "Puppies",
-                    "Dogs"
-                ],
-                "title": "Dog Photos"
-            }
-        ]
-    return structure
+    with open(dir_path + '/reference/json/good_example/structure.json') as f:
+        return json.load(f)
 
 @pytest.fixture
 def links_fix():
-    links = [
-            {
-                "author": "Amanda",
-                "description": "\"Your Recommended Daily Allowance of Puppies\"",
-                "headings": [
-                    "Puppies"
-                ],
-                "title": "The Daily Puppy",
-                "url": "http://www.dailypuppy.com/"
-            },
-            {
-                "author": "Pexels",
-                "description": "\"Browse a wide range of dog images and find high quality and professional pictures you can use for free. You can find photos of bulldogs, retrievers, beagles and of course puppies. Also have a look at our pictures of pets and cats.\"",
-                "headings": [
-                    "Dogs"
-                ],
-                "title": "Dog Images",
-                "url": "https://www.pexels.com/search/dog/"
-            },
-            {
-                "author": "Chelsea Marshall",
-                "description": "\"The whole internet has led up to this crucial moment.\"",
-                "headings": [
-                    "Kittens"
-                ],
-                "title": "The 100 Most Important Kitten Photos Of All Time",
-                "url": "https://www.buzzfeed.com/chelseamarshall/best-kitten-pictures?utm_term=.kieR4bQpwG#.xyA4JZEVx3"
-            },
-            {
-                "author": "Reddit",
-                "description": "\"This is subreddit is only for cat pictures, so yeah... Keep your paws off it if you want to post something else.\"",
-                "headings": [
-                    "Cats"
-                ],
-                "title": "r/CatPictures",
-                "url": "https://www.reddit.com/r/catpictures/"
-            },
-            {
-                "author": "Awkward Family Photos",
-                "description": "Awkward family photos featuring pets.",
-                "headings": [
-                    "Dogs",
-                    "Cats"
-                ],
-                "title": "Awkward Family Pet Photos",
-                "url": "http://awkwardfamilyphotos.com/category/photos/pets-2/"
-            }
-        ]
-    return links
+    with open(dir_path + '/reference/json/good_example/links.json') as f:
+        return json.load(f)
 
 @pytest.fixture
 def formatting_fix():
-    formatting = {
-            "main title": "#",
-            "headings": "##",
-            "toc headings": "###",
-            "link title": "",
-            "author": "",
-            "description": "",
-            "tags": ""
-        }
-    return formatting
+    with open(dir_path + '/reference/json/good_example/formatting.json') as f:
+        return json.load(f)
 
 
 class JsonWrapper:
