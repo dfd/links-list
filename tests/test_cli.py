@@ -97,14 +97,17 @@ class TestStructureHeadings(object):
                 jsonwrapper.structure)
         assert title_to_index == tti
 
+def setup_output():
+    for f in glob.glob(dir_path + '/reference/example_output/*'):
+        if os.path.isfile(f):
+            shutil.copy(f, './')
+        else:
+            shutil.copytree(f, os.path.basename(f))
+
+
 def test_delete_old_output(runner):
     with runner.isolated_filesystem():
-        for f in glob.glob(dir_path + '/reference/example_output/*'):
-            if os.path.isfile(f):
-                shutil.copy(f, './')
-            else:
-                shutil.copytree(f, os.path.basename(f))
-        print(os.listdir())
+        setup_output()
         cli.delete_old_output()
         assert not os.path.exists('README.md')
         assert not os.path.exists('./output')
