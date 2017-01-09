@@ -1,8 +1,10 @@
 import pytest
 from click.testing import CliRunner
 from links_list import cli
-import os
+import os, shutil, glob
 import json
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 @pytest.fixture
 def runner():
@@ -89,6 +91,24 @@ class TestStructureHeadings(object):
                 jsonwrapper.structure)
         assert headings_to_folders == htf
 
+    def test_title_to_index(self, jsonwrapper):
+        tti = {'Cat Photos':0, 'Dog Photos':1}
+        _, _, title_to_index = cli.get_structure_headings(
+                jsonwrapper.structure)
+        assert title_to_index == tti
+
+def test_delete_old_output(runner):
+    with runner.isolated_filesystem():
+        for f in glob.glob(dir_path + '/reference/example_output/*'):
+            if os.path.isfile(f):
+                shutil.copy(f, './')
+            else:
+                shutil.copytree(f, os.path.basename(f))
+        print(os.listdir())
+        cli.delete_old_output()
+        assert not os.path.exists('README.md')
+        assert not os.path.exists('./output')
+        
 """
 
 def test_cli(runner):
