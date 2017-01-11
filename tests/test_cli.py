@@ -3,6 +3,7 @@ from click.testing import CliRunner
 from links_list import cli
 import os, shutil, glob
 import json
+from collections import OrderedDict
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -85,14 +86,13 @@ class TestStructureHeadings(object):
         assert structure_headings == headings
 
     def test_headings_to_folders(self, jsonwrapper):
-        htf = {'Dogs':'Dog Photos', 'Puppies':'Dog Photos', 
-                'Cats':'Cat Photos', 'Kittens':'Cat Photos'}
+        htf = jsonwrapper.headings_to_folders
         _, headings_to_folders, _ = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert headings_to_folders == htf
 
     def test_title_to_index(self, jsonwrapper):
-        tti = {'Cat Photos':0, 'Dog Photos':1}
+        tti = jsonwrapper.title_to_index
         _, _, title_to_index = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert title_to_index == tti
@@ -112,6 +112,30 @@ def test_delete_old_output(runner):
         assert not os.path.exists('README.md')
         assert not os.path.exists('./output')
         
+@pytest.mark.usefixtures("jsonwrapper")
+class TestCheckUrls(object):
+
+    def test_links(self, jsonwrapper):
+        links = jsonwrapper.links
+        structure = jsonwrapper.structure
+        cli.check_urls(links, structure,
+                jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
+        with open(dir_path + 
+                '/reference/json/good_example/links_check_urls.json', 'r') as f:
+            links_example = json.load(f)
+        assert links == links_example
+
+"""
+    def test_structure(self, jsonwrapper):
+        links = jsonwrapper.links
+        structure = jsonwrapper.structure
+        cli.check_urls(links, structure,
+                jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
+        with open(dir_path + 
+                '/reference/json/good_example/structure_check_urls.json', 'r') as f:
+            structure_example = json.load(f, object_pairs_hook=OrderedDict)
+        assert structure == structure_example
+"""
 """
 
 def test_cli(runner):
