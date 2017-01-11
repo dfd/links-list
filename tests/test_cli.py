@@ -3,6 +3,7 @@ from click.testing import CliRunner
 from links_list import cli
 import os, shutil, glob
 import json
+from collections import OrderedDict
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -114,16 +115,27 @@ def test_delete_old_output(runner):
 @pytest.mark.usefixtures("jsonwrapper")
 class TestCheckUrls(object):
 
-    def test_check_urls(self, jsonwrapper):
+    def test_links(self, jsonwrapper):
         links = jsonwrapper.links
-        cli.check_urls(links, jsonwrapper.structure,
+        structure = jsonwrapper.structure
+        cli.check_urls(links, structure,
                 jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
         with open(dir_path + 
                 '/reference/json/good_example/links_check_urls.json', 'r') as f:
             links_example = json.load(f)
         assert links == links_example
 
-
+"""
+    def test_structure(self, jsonwrapper):
+        links = jsonwrapper.links
+        structure = jsonwrapper.structure
+        cli.check_urls(links, structure,
+                jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
+        with open(dir_path + 
+                '/reference/json/good_example/structure_check_urls.json', 'r') as f:
+            structure_example = json.load(f, object_pairs_hook=OrderedDict)
+        assert structure == structure_example
+"""
 """
 
 def test_cli(runner):
