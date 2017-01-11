@@ -44,7 +44,8 @@ def get_json():
     structure = read_json(json_dir + 'structure.json')
     links = read_json(json_dir + 'links.json')
     formatting = read_json('./json/formatting.json')
-    return structure, links, formatting
+    project = read_json('./json/project.json')
+    return structure, links, formatting, project
 
 def get_link_headings(links):
     link_headings = set([])
@@ -101,7 +102,7 @@ def check_urls(links, structure, headings_to_folders, title_to_index):
 
 
 
-def generate_output(links, structure, formatting):
+def generate_output(links, structure, formatting, project):
     pass
 
 def print_results():
@@ -111,11 +112,11 @@ def print_results():
 def generate():
     """Generate markdown list of links from json
     """
-    structure, links, formatting = get_json()
+    structure, links, formatting, project = get_json()
     link_headings = get_link_headings(links)
     structure_headings, headings_to_folders, title_to_index = \
             get_structure_headings(structure)
     delete_old_output()
     check_urls(links)
-    generate_output(links, structure, formatting)
+    generate_output(links, structure, formatting, project)
     print_results(links, link_headings, structure_headings)

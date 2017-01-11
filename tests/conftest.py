@@ -33,6 +33,11 @@ def formatting_fix():
         return json.load(f)
 
 @pytest.fixture
+def project_fix():
+    with open(dir_path + '/reference/json/good_example/project.json') as f:
+        return json.load(f)
+
+@pytest.fixture
 def headings_to_folders_fix():
     with open(dir_path + 
             '/reference/json/good_example/headings_to_folders.json') as f:
@@ -45,17 +50,18 @@ def title_to_index_fix():
         return json.load(f)
 
 class JsonWrapper:
-    def __init__(self, structure, links, formatting, headings_to_folders,
+    def __init__(self, structure, links, formatting, project, headings_to_folders,
             title_to_index):
         self.structure = structure
         self.links = links
         self.formatting = formatting
+        self.project= project
         self.headings_to_folders = headings_to_folders
         self.title_to_index = title_to_index
 
 @pytest.fixture(scope="module")
 def jsonwrapper():
-    return JsonWrapper(structure_fix(), links_fix(), formatting_fix(),
-            headings_to_folders_fix(), title_to_index_fix())
+    return JsonWrapper(structure_fix(), links_fix(), formatting_fix(), 
+            project_fix(), headings_to_folders_fix(), title_to_index_fix())
 
 
