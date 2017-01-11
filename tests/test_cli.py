@@ -48,6 +48,8 @@ def start_project(jsonwrapper):
         json.dump(jsonwrapper.links, f)
     with open('./json/formatting.json', 'w') as f:
         json.dump(jsonwrapper.formatting, f)
+    with open('./json/project.json', 'w') as f:
+        json.dump(jsonwrapper.project, f)
 
 @pytest.mark.usefixtures("runner", "jsonwrapper")
 class TestGetJson(object):
@@ -55,21 +57,28 @@ class TestGetJson(object):
     def test_structure(self, runner, jsonwrapper):
         with runner.isolated_filesystem():
             start_project(jsonwrapper)
-            structure, _, _ = cli.get_json()
+            structure, _, _, _ = cli.get_json()
             assert structure == jsonwrapper.structure
 
     def test_links(self, runner, jsonwrapper):
         with runner.isolated_filesystem():
             start_project(jsonwrapper)
-            _, links, _ = cli.get_json()
+            _, links, _, _ = cli.get_json()
             assert links == jsonwrapper.links
 
     def test_formatting(self, runner, jsonwrapper):
         with runner.isolated_filesystem():
             start_project(jsonwrapper)
             print(os.getcwd())
-            _, _, formatting = cli.get_json()
+            _, _, formatting, _ = cli.get_json()
             assert formatting == jsonwrapper.formatting
+
+    def test_project(self, runner, jsonwrapper):
+        with runner.isolated_filesystem():
+            start_project(jsonwrapper)
+            print(os.getcwd())
+            _, _, _, project = cli.get_json()
+            assert project == jsonwrapper.project
 
 def test_get_link_headings(jsonwrapper):
     link_headings = cli.get_link_headings(jsonwrapper.links)
