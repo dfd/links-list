@@ -88,21 +88,27 @@ def test_get_link_headings(jsonwrapper):
 @pytest.mark.usefixtures("jsonwrapper")
 class TestStructureHeadings(object):
 
+    def test_structure(self, jsonwrapper):
+        sgsh = jsonwrapper.structure_get_structure_headings
+        structure_get_structure_headings, _, _, _ = cli.get_structure_headings(
+                jsonwrapper.structure)
+        assert structure_get_structure_headings == sgsh
+
     def test_structure_headings(self, jsonwrapper):
         headings = set(['Dogs','Puppies','Cats','Kittens'])
-        structure_headings, _, _ = cli.get_structure_headings(
+        _, structure_headings, _, _ = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert structure_headings == headings
 
     def test_headings_to_folders(self, jsonwrapper):
         htf = jsonwrapper.headings_to_folders
-        _, headings_to_folders, _ = cli.get_structure_headings(
+        _, _, headings_to_folders, _ = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert headings_to_folders == htf
 
     def test_title_to_index(self, jsonwrapper):
         tti = jsonwrapper.title_to_index
-        _, _, title_to_index = cli.get_structure_headings(
+        _, _, _, title_to_index = cli.get_structure_headings(
                 jsonwrapper.structure)
         assert title_to_index == tti
 
@@ -126,7 +132,7 @@ class TestCheckUrls(object):
 
     def test_links(self, jsonwrapper):
         links = jsonwrapper.links
-        structure = jsonwrapper.structure
+        structure = jsonwrapper.structure_get_structure_headings
         cli.check_urls(links, structure,
                 jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
         with open(dir_path + 

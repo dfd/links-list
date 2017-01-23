@@ -49,19 +49,37 @@ def title_to_index_fix():
             '/reference/json/good_example/title_to_index.json') as f:
         return json.load(f)
 
+@pytest.fixture
+def structure_get_structure_headings():
+    with open(dir_path + 
+            '/reference/json/good_example/structure_get_structure_headings.json') as f:
+        return json.load(f)
+
+@pytest.fixture
+def structure_check_urls():
+    with open(dir_path + 
+            '/reference/json/good_example/structure_check_urls.json') as f:
+        return json.load(f)
+
 class JsonWrapper:
-    def __init__(self, structure, links, formatting, project, headings_to_folders,
-            title_to_index):
+    def __init__(self, structure, links, formatting, project, 
+            headings_to_folders,
+            title_to_index,
+            structure_get_structure_headings,
+            structure_check_urls):
         self.structure = structure
         self.links = links
         self.formatting = formatting
         self.project= project
         self.headings_to_folders = headings_to_folders
         self.title_to_index = title_to_index
+        self.structure_get_structure_headings = structure_get_structure_headings
+        self.structure_check_urls = structure_check_urls
 
 @pytest.fixture(scope="module")
 def jsonwrapper():
     return JsonWrapper(structure_fix(), links_fix(), formatting_fix(), 
-            project_fix(), headings_to_folders_fix(), title_to_index_fix())
+            project_fix(), headings_to_folders_fix(), title_to_index_fix(),
+            structure_get_structure_headings(), structure_check_urls())
 
 

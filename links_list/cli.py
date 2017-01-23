@@ -5,6 +5,7 @@ import shutil
 import json
 from urllib.request import urlopen, Request
 from collections import OrderedDict
+import copy
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -55,24 +56,28 @@ def get_link_headings(links):
     return link_headings
 
 def get_structure_headings(structure):
+    structure = copy.deepcopy(structure)
     structure_headings = set([])
     headings_to_folders = {}
     title_to_index = {}
     for idx, folder in enumerate(structure):
-        a = OrderedDict()
+        a = []
         for heading in folder['headings']:
+            #print(folder)
             headings_to_folders[heading] = folder['title']
             structure_headings.add(heading)
             title_to_index[folder['title']] = idx
-            a[heading] = []
+            a.append({heading:[]})
         folder['headings'] = a
-    return structure_headings, headings_to_folders, title_to_index
+    print(structure)
+    return structure, structure_headings, headings_to_folders, title_to_index
 
 def delete_old_output():
     shutil.rmtree('./output')
     os.remove('README.md')
 
 def check_urls(links, structure, headings_to_folders, title_to_index):
+    print(structure)
     max_err = 5
     for link in links:
         url_err = True
@@ -97,8 +102,14 @@ def check_urls(links, structure, headings_to_folders, title_to_index):
                 click.echo("URLError for " + link['url'])
             link['url_err'] = url_err
             for tag in link['headings']:
-                structure[title_to_index[headings_to_folders[tag]]
-                        ]['headings'][tag].append(link)
+                print(structure[title_to_index[headings_to_folders[tag]]
+                        ]['headings'])
+                print(tag)
+                list_of_headings = structure[title_to_index[headings_to_folders[
+                    tag]]]['headings']
+                for heading in list_of_headings:
+                    if tag in heading.keys():
+                        heading[tag].append(link)
 
 
 
@@ -114,7 +125,7 @@ def generate():
     """
     structure, links, formatting, project = get_json()
     link_headings = get_link_headings(links)
-    structure_headings, headings_to_folders, title_to_index = \
+    structure, structure_headings, headings_to_folders, title_to_index = \
             get_structure_headings(structure)
     delete_old_output()
     check_urls(links)
