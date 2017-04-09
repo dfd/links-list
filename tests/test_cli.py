@@ -1,7 +1,7 @@
 import pytest
 from click.testing import CliRunner
 from links_list import cli
-import os, shutil, glob
+import os, shutil, glob, filecmp
 import json
 from collections import OrderedDict
 
@@ -144,13 +144,20 @@ class TestCheckUrls(object):
                 jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
         assert links == jsonwrapper.links_check_urls
 
-"""
+@pytest.mark.usefixtures("runner")
 @pytest.mark.usefixtures("jsonwrapper")
 class TestGenerateOutput(object):
     
-    def test_main_toc(self, jsonwrapper):
-        structure = 
-"""
+    def test_main_toc(self, jsonwrapper, runner):
+        with runner.isolated_filesystem():
+            structure = jsonwrapper.structure_check_urls
+            formatting = jsonwrapper.formatting
+            project = jsonwrapper.project
+            headings_to_folders = jsonwrapper.headings_to_folders
+            cli.generate_output(structure, formatting, project, headings_to_folders)
+            assert filecmp.cmp('README.md', 
+                    dir_path + '/reference/example_output/README.md')
+
 
 
 """

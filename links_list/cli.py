@@ -111,44 +111,49 @@ def check_urls(links, structure, headings_to_folders, title_to_index):
     return links, structure
 
 
-def generate_output(structure, formatting, project):
+def generate_output(structure, formatting, project, headings_to_folders):
     with open(output_dir + "/README.md","a+") as toc:
         toc.write(formatting['main title'] + " " + project['title'] + " \n")
         toc.write(formatting['description'] + " \n")
         toc.write(formatting['headings'] + " Table of Contents  \n")
-        for folder, item in structure.items():
-            toc.write(formatting['toc headings'] + " [" + item['title'] + "](./" + folder + ")  \n")
-            new_folder = output_dir + "/" + folder
-            os.mkdir(new_folder)
-            with open(new_folder + "/README.md","a+") as f:
-                f.write(formatting['main title'] + " " + item['title'] + '  \n')
-                f.write(formatting['toc headings'] + " Local Table of Contents  \n")
-                f.write("[(Back to Master Table of Contents)](../)  \n")
-                for heading in item['headings'].keys():
-                    f.write("[" + heading + "](" + formatting['main title'] + " " + anchor(heading) + ")  \n")
-                for heading, hlinks in item['headings'].items():
-                    toc.write("[" + heading + "](" + folder + "#" + anchor(heading)
-                            + ")  \n")
-                    f.write(formatting['headings'] + " <a name=\"" + anchor(heading) + "\"></a>" + 
-                            heading + "  \n\n")
-                    for link in hlinks:
-                        f.write("[" + link['title'] + "](" + link['url'] + ")")
-                        if link['url_err']:
-                            f.write(" (URL Failure)")
-                        f.write("  \n")
-                        if 'author' in link:
-                            f.write("by " + link['author'] + "  \n")
-                        f.write(link['description'] + "  \n")
-                        if len(link['tags']) > 1:
-                            f.write("Other tags: " )
-                            tags = link['tags'][:]
-                            tags.remove(heading)
-                            for tag in tags[:-1]:
-                               f.write("[" + tag + "](../" + headings_to_folders[tag] + "#" + anchor(tag) + "), ")
-                            f.write("[" + tags[-1] + "](../" + headings_to_folders[tags[-1]] + "#" + anchor(tags[-1]) + ") ")
-                            f.write("  \n")
-                        f.write("  \n")
-
+        for item in structure:
+            folders = item['headings']
+            for folder_dict in folders:
+                for folder, links in folder_dict.items():
+                    toc.write(formatting['toc headings'] + " [" + item['title'] + "](./" + folder + ")  \n")
+                    new_folder = output_dir + "/" + folder
+                    os.mkdir(new_folder)
+                    with open(new_folder + "/README.md","a+") as f:
+                        f.write(formatting['main title'] + " " + item['title'] + '  \n')
+                        f.write(formatting['toc headings'] + " Local Table of Contents  \n")
+                        f.write("[(Back to Master Table of Contents)](../)  \n")
+                        for fol in folders:
+                            for heading in fol.keys():
+                                f.write("[" + heading + "](" + formatting['main title'] + " " + anchor(heading) + ")  \n")
+                            for heading, hlinks in fol.items():
+                                toc.write("[" + heading + "](" + folder + "#" + anchor(heading)
+                                        + ")  \n")
+                                f.write(formatting['headings'] + " <a name=\"" + anchor(heading) + "\"></a>" + 
+                                        heading + "  \n\n")
+                                for link in hlinks:
+                                    f.write("[" + link['title'] + "](" + link['url'] + ")")
+                                    if link['url_err']:
+                                        f.write(" (URL Failure)")
+                                    f.write("  \n")
+                                    if 'author' in link:
+                                        f.write("by " + link['author'] + "  \n")
+                                    f.write(link['description'] + "  \n")
+                                    if len(link['headings']) > 1:
+                                        f.write("Other tags: " )
+                                        tags = link['headings'][:]
+                                        tags.remove(heading)
+                                        for tag in tags[:-1]:
+                                           f.write("[" + tag + "](../" + headings_to_folders[tag] + "#" + anchor(tag) + "), ")
+                                        f.write("[" + tags[-1] + "](../" + headings_to_folders[tags[-1]] + "#" + anchor(tags[-1]) + ") ")
+                                        f.write("  \n")
+                                    f.write("  \n")
+    with open(output_dir + '/README.md', 'r') as fin:
+        print(fin.read())
 
 def print_results():
     pass
@@ -163,5 +168,5 @@ def generate():
             get_structure_headings(structure)
     delete_old_output()
     links, structure = check_urls(links, structure, headings_to_folders, title_to_index)
-    generate_output(structure, formatting, project)
+    generate_output(structure, formatting, project, headings_to_folders)
     print_results(links, link_headings, structure_headings)
