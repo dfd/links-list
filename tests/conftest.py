@@ -61,12 +61,19 @@ def structure_check_urls():
             '/reference/json/good_example/structure_check_urls.json') as f:
         return json.load(f)
 
+@pytest.fixture
+def links_check_urls():
+    with open(dir_path + 
+            '/reference/json/good_example/links_check_urls.json') as f:
+        return json.load(f)
+
 class JsonWrapper:
     def __init__(self, structure, links, formatting, project, 
             headings_to_folders,
             title_to_index,
             structure_get_structure_headings,
-            structure_check_urls):
+            structure_check_urls,
+            links_check_urls):
         self.structure = structure
         self.links = links
         self.formatting = formatting
@@ -75,11 +82,13 @@ class JsonWrapper:
         self.title_to_index = title_to_index
         self.structure_get_structure_headings = structure_get_structure_headings
         self.structure_check_urls = structure_check_urls
+        self.links_check_urls = links_check_urls
 
 @pytest.fixture(scope="module")
 def jsonwrapper():
     return JsonWrapper(structure_fix(), links_fix(), formatting_fix(), 
             project_fix(), headings_to_folders_fix(), title_to_index_fix(),
-            structure_get_structure_headings(), structure_check_urls())
+            structure_get_structure_headings(), structure_check_urls(),
+            links_check_urls())
 
 

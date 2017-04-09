@@ -130,27 +130,29 @@ def test_delete_old_output(runner):
 @pytest.mark.usefixtures("jsonwrapper")
 class TestCheckUrls(object):
 
+    def test_structure(self, jsonwrapper):
+        links = jsonwrapper.links
+        structure = jsonwrapper.structure_get_structure_headings
+        links, structure = cli.check_urls(links, structure,
+                jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
+        assert structure == jsonwrapper.structure_check_urls
+
     def test_links(self, jsonwrapper):
         links = jsonwrapper.links
         structure = jsonwrapper.structure_get_structure_headings
-        cli.check_urls(links, structure,
+        links, structure = cli.check_urls(links, structure,
                 jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
-        with open(dir_path + 
-                '/reference/json/good_example/links_check_urls.json', 'r') as f:
-            links_example = json.load(f)
-        assert links == links_example
+        assert links == jsonwrapper.links_check_urls
 
 """
-    def test_structure(self, jsonwrapper):
-        links = jsonwrapper.links
-        structure = jsonwrapper.structure
-        cli.check_urls(links, structure,
-                jsonwrapper.headings_to_folders, jsonwrapper.title_to_index)
-        with open(dir_path + 
-                '/reference/json/good_example/structure_check_urls.json', 'r') as f:
-            structure_example = json.load(f, object_pairs_hook=OrderedDict)
-        assert structure == structure_example
+@pytest.mark.usefixtures("jsonwrapper")
+class TestGenerateOutput(object):
+    
+    def test_main_toc(self, jsonwrapper):
+        structure = 
 """
+
+
 """
 
 def test_cli(runner):

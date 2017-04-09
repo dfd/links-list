@@ -8,6 +8,7 @@ from collections import OrderedDict
 import copy
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
+output_dir = '.'
 
 def anchor(heading):
     """Removes spaces from string
@@ -77,15 +78,15 @@ def delete_old_output():
     os.remove('README.md')
 
 def check_urls(links, structure, headings_to_folders, title_to_index):
-    print(structure)
+    structure = copy.deepcopy(structure)
+    links = copy.deepcopy(links)
     max_err = 5
     for link in links:
         url_err = True
         attempts = 0
-        while url_err and attempts < 5:
+        while url_err and attempts < max_err:
             if attempts > 1:
-                print("attempt:", attempts, link['url'])
-            attempts += attempts
+                attempts += attempts
             try:
                 req = Request(link['url'], 
                         headers={'User-Agent' : "Magic Browser"})
@@ -102,19 +103,52 @@ def check_urls(links, structure, headings_to_folders, title_to_index):
                 click.echo("URLError for " + link['url'])
             link['url_err'] = url_err
             for tag in link['headings']:
-                print(structure[title_to_index[headings_to_folders[tag]]
-                        ]['headings'])
-                print(tag)
                 list_of_headings = structure[title_to_index[headings_to_folders[
                     tag]]]['headings']
                 for heading in list_of_headings:
                     if tag in heading.keys():
                         heading[tag].append(link)
+    return links, structure
 
 
+def generate_output(structure, formatting, project):
+    with open(output_dir + "/README.md","a+") as toc:
+        toc.write(formatting['main title'] + " " + project['title'] + " \n")
+        toc.write(formatting['description'] + " \n")
+        toc.write(formatting['headings'] + " Table of Contents  \n")
+        for folder, item in structure.items():
+            toc.write(formatting['toc headings'] + " [" + item['title'] + "](./" + folder + ")  \n")
+            new_folder = output_dir + "/" + folder
+            os.mkdir(new_folder)
+            with open(new_folder + "/README.md","a+") as f:
+                f.write(formatting['main title'] + " " + item['title'] + '  \n')
+                f.write(formatting['toc headings'] + " Local Table of Contents  \n")
+                f.write("[(Back to Master Table of Contents)](../)  \n")
+                for heading in item['headings'].keys():
+                    f.write("[" + heading + "](" + formatting['main title'] + " " + anchor(heading) + ")  \n")
+                for heading, hlinks in item['headings'].items():
+                    toc.write("[" + heading + "](" + folder + "#" + anchor(heading)
+                            + ")  \n")
+                    f.write(formatting['headings'] + " <a name=\"" + anchor(heading) + "\"></a>" + 
+                            heading + "  \n\n")
+                    for link in hlinks:
+                        f.write("[" + link['title'] + "](" + link['url'] + ")")
+                        if link['url_err']:
+                            f.write(" (URL Failure)")
+                        f.write("  \n")
+                        if 'author' in link:
+                            f.write("by " + link['author'] + "  \n")
+                        f.write(link['description'] + "  \n")
+                        if len(link['tags']) > 1:
+                            f.write("Other tags: " )
+                            tags = link['tags'][:]
+                            tags.remove(heading)
+                            for tag in tags[:-1]:
+                               f.write("[" + tag + "](../" + headings_to_folders[tag] + "#" + anchor(tag) + "), ")
+                            f.write("[" + tags[-1] + "](../" + headings_to_folders[tags[-1]] + "#" + anchor(tags[-1]) + ") ")
+                            f.write("  \n")
+                        f.write("  \n")
 
-def generate_output(links, structure, formatting, project):
-    pass
 
 def print_results():
     pass
@@ -128,6 +162,6 @@ def generate():
     structure, structure_headings, headings_to_folders, title_to_index = \
             get_structure_headings(structure)
     delete_old_output()
-    check_urls(links)
-    generate_output(links, structure, formatting, project)
+    links, structure = check_urls(links, structure, headings_to_folders, title_to_index)
+    generate_output(structure, formatting, project)
     print_results(links, link_headings, structure_headings)
